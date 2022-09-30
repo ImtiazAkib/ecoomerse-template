@@ -1,13 +1,32 @@
 import { faCartShopping, faShop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "react-bootstrap/Button";
-import React from "react";
+import React, { useEffect } from "react";
 import "./Navbar.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import app from "../Firebase/firebase.init";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { removeUser } from "../../features/cart/cartSlice";
 
 const Navbar = () => {
-  const { totalAmount } = useSelector((store) => store.cart);
+  const dispatch = useDispatch();
+  const { totalAmount, user } = useSelector((store) => store.cart);
+  const auth = getAuth(app);
+  const logOut = () => {
+    signOut(auth)
+      .then(() => {})
+      .catch((error) => {
+        alert(error, "An error happened");
+      });
+  };
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        dispatch(removeUser(""));
+      }
+    });
+  }, [user.email]);
   return (
     <>
       <header className="nav-main">
@@ -29,7 +48,13 @@ const Navbar = () => {
           <div className="nav-right">
             <ul>
               <li>
-                <Link to="/login">Sign In</Link>
+                {user.email ? (
+                  <Button variant="primary" onClick={() => logOut()}>
+                    Log Out
+                  </Button>
+                ) : (
+                  <Link to="/login">Sign In</Link>
+                )}
               </li>
               <li>
                 <Link to="/shop">Your Shop</Link>

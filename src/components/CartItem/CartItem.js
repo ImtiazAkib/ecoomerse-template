@@ -1,11 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./CartItem.css";
-import {
-  cartAmount,
-  addToCart,
-  calculateTotal,
-} from "../../features/cart/cartSlice";
+import { cartAmount, addToCart } from "../../features/cart/cartSlice";
 import { useDispatch } from "react-redux";
 
 const CartItem = ({ id, title, description, price, thumbnail }) => {
@@ -24,7 +20,6 @@ const CartItem = ({ id, title, description, price, thumbnail }) => {
           onClick={() => {
             dispatch(cartAmount());
             dispatch(addToCart({ id }));
-            dispatch(calculateTotal());
           }}
         >
           Add to Cart

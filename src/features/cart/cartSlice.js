@@ -6,7 +6,7 @@ const initialState = {
   amount: [],
   totalAmount: 0,
   total: 0,
-  user: {},
+  user: { email: "" },
   isLoading: false,
 };
 
@@ -50,14 +50,23 @@ const cartSlice = createSlice({
     },
     calculateTotal: (state) => {
       let total = 0;
+      let amount = 0;
       state.amount.map(
         (item) => (total = total + item.product.price * item.amount)
       );
+      state.amount.map((item) => (amount = amount + item.amount));
       state.total = total;
+      state.totalAmount = amount;
     },
     clearCartItem: (state, action) => {
       const itemId = action.payload;
-      state.amount = state.amount.filter((item) => item.id !== itemId);
+      state.amount = state.amount.filter((item) => item.product.id !== itemId);
+    },
+    addUser: (state, action) => {
+      state.user.email = action.payload;
+    },
+    removeUser: (state, action) => {
+      state.user.email = action.payload;
     },
   },
   extraReducers: {
@@ -71,7 +80,13 @@ const cartSlice = createSlice({
   },
 });
 
-export const { cartAmount, addToCart, calculateTotal, clearCartItem } =
-  cartSlice.actions;
+export const {
+  cartAmount,
+  addToCart,
+  calculateTotal,
+  clearCartItem,
+  addUser,
+  removeUser,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
